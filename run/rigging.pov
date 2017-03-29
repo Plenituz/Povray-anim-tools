@@ -56,8 +56,8 @@ union {
 }                                      
 
 //object{Camion} 
- 
-#if(frame_number = 0)
+
+#if(clock = 0)
     KeyframeHolder_Create("mKey")
     KeyFrameHolder_Add("mKey", 0, 0)
     KeyFrameHolder_Add("mKey", 0, 10)
@@ -66,11 +66,11 @@ union {
     KeyFrameHolder_Add("mKey", 0, 50)
 #end
 
-//#for(I, 0, 48)                            
-    #local Value = KeyFrameHolder_GetValueAtTime("mKey", frame_number);
-    //#debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
+#for(I, 0, 70)                            
+    #local Value = KeyFrameHolder_GetValueAtTime("mKey", I);
+    #debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
     sphere{
-        <frame_number/5, Value, 0>, 1
+        <I/5, Value, 0>, .1
         pigment{Red}
     }
-//#end
+#end

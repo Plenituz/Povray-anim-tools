@@ -19,20 +19,25 @@
     #local TimeArrayName = concat(Name, ".times");
     #local ValuesArrayName = concat(Name, ".values");
     #local Count = DiskArray_GetCount(TimeArrayName);
-    
-    #local Interpolation = -1;
-    //carrefull for indexoutofbound, not secure yet
-    #for(I, 0, Count-1)
-        #local ThisTime = DiskArray_GetFloat(TimeArrayName, I);
-        #local NextTime = DiskArray_GetFloat(TimeArrayName, I+1); 
-        #if(Time >= ThisTime & Time < NextTime)
-            #local From = DiskArray_GetFloat(ValuesArrayName, I);
-            #local To = DiskArray_GetFloat(ValuesArrayName, I+1); 
-            #local TimeVal = (Time - ThisTime)/(NextTime-ThisTime);
-            #local Interpolation = KeyFrameHolder_Interpolator(From, To, TimeVal, "AccelerateDeccelerate");
-            #break
+     
+    #if(Count != 0)
+        #local Interpolation = DiskArray_GetFloat(ValuesArrayName, Count-1);
+        //carreful for indexoutofbound, not secure yet
+        #for(I, 0, Count-2)
+            #local ThisTime = DiskArray_GetFloat(TimeArrayName, I);
+            #local NextTime = DiskArray_GetFloat(TimeArrayName, I+1); 
+            #if(Time >= ThisTime & Time < NextTime)
+                #local From = DiskArray_GetFloat(ValuesArrayName, I);
+                #local To = DiskArray_GetFloat(ValuesArrayName, I+1); 
+                #local TimeVal = (Time - ThisTime)/(NextTime-ThisTime);
+                #local Interpolation = KeyFrameHolder_Interpolator(From, To, TimeVal, "AccelerateDeccelerate");
+                #break
+            #end
         #end
-    #end 
+    #else
+        #local Interpolation = 0;
+    #end
+     
     Interpolation;
 #end  
 
