@@ -1,3 +1,6 @@
+#ifndef(KEYFRAME_INC_VAR)
+#declare KEYFRAME_INC_VAR = 1;
+
 #include "IO.inc" 
 #include "DiskArray.inc"
 //these files are in the "POVYX" repo   
@@ -153,3 +156,5 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
     #local Result = <PX, PY>;
     Result;
 #end 
+
+#end // end Keyframe.inc
