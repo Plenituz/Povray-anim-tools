@@ -76,7 +76,7 @@ union {
    
 #end  
 #local Interpolation = "CustomCurve"
-/*
+
 #for(I, 0, 70)                            
     #local Value = KeyFrameHolder_GetValueAtTime("mKey", I, Interpolation);
     #debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
@@ -86,13 +86,15 @@ union {
     }
 #end 
 
-*/
+
+/*
 #local Value = KeyFrameHolder_GetValueAtTime("mKey", frame_number, Interpolation);
 #debug concat("\nvalue=", str(Value, 0,-1), " i=", str(frame_number, 0, -1), "\n")
 sphere{
     <frame_number/5, Value, 0>, .1
     pigment{Red}
-}
+} 
+*/
 
 
 /*

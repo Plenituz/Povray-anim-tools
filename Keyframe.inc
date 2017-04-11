@@ -109,6 +109,32 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
         #end    
     #end                           
     Return;
+#end
+
+#macro KeyFrameHolder_Evaluate2(Val, Start, FHandle, SHandle, End, Iterations)
+    #local Return = Val;
+    #local Low = 0;
+    #local High = 1;
+    #local Mid = 0.5;
+     
+    #for(I, 0, Iterations)
+        #local Vect = KeyFrameHolder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);
+        #if(Val < Vect.x)
+            #local High = Mid;      
+        #else 
+            #if(Val > Vect.x)
+                #local Low = Mid;       
+            #else
+                //Val == Mid
+                #break
+            #end
+        #end
+        #local Mid = Low + (High-Low)/2;
+    #end     
+    #local Vect = KeyFrameHolder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);     
+    #local Return = Vect.x;
+    
+    Return;
 #end 
 
 #macro KeyFrameHolder_PartialBezier(T, A, B, C, D)
