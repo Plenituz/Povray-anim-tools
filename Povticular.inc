@@ -19,10 +19,9 @@
     #local Attr = Povticular_Name(Name)
     setAttr(Attr, "emitterPos", <0, 0, 0>)
     setAttr(Attr, "maxCount", 1000)                 //max number of particle
-    setAttr(Attr, "particlePerFrame", 1)           //number of particle emitted every frame
+    setAttr(Attr, "particlePerFrame", 10)           //number of particle emitted every frame
     setAttr(Attr, "framerate", 24)                  //render framerate, too calculate life and stuff
-    setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies  
-    setAttr(Attr, "baseVelocity", <0, -1, 0>)  
+    setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies    
     
     DA_Create(Povticular_PosArray(Name), 100)
     DA_Create(Povticular_VelArray(Name), 100)
@@ -46,16 +45,20 @@
 
 #macro Povticular_AddParticle(Name)
     #local Attr = Povticular_Name(Name) 
-    
-    #local Life = getFloatAttr(Attr, "particleLifeTimeInFrame");
-    #local EmitterPos = getVectAttr(Attr, "emitterPos");
-    #local BaseVel = <RandomReal(sd, -5, 5), RandomReal(sd, -5, 5), RandomReal(sd, -5, 5)>;
-    
-    DA_Add(Povticular_PosArray(Name), EmitterPos)
-    DA_Add(Povticular_VelArray(Name), BaseVel)
-    DA_Add(Povticular_ColorArray(Name), <1, 0.5, 0>)
-    DA_Add(Povticular_SizeArray(Name), 0.1)
-    DA_Add(Povticular_LifeArray(Name), Life)
+                                       
+    #local MaxCount = getFloatAttr(Attr, "maxCount");
+    #local Count = Povticular_ParticleCount(Name);
+    #if(Count < MaxCount)
+        #local Life = getFloatAttr(Attr, "particleLifeTimeInFrame");
+        #local EmitterPos = getVectAttr(Attr, "emitterPos");
+        #local BaseVel = <RandomReal(sd, -5, 5), RandomReal(sd, -5, 5), RandomReal(sd, -5, 5)>;
+        
+        DA_Add(Povticular_PosArray(Name), EmitterPos)
+        DA_Add(Povticular_VelArray(Name), BaseVel)
+        DA_Add(Povticular_ColorArray(Name), <1, 0.5, 0>)
+        DA_Add(Povticular_SizeArray(Name), 0.1)
+        DA_Add(Povticular_LifeArray(Name), Life)
+    #end
 #end
 
 #macro Povticular_RemoveParticle(Name, Index)
@@ -70,7 +73,9 @@
     #local PosArr = Povticular_PosArray(Name) 
     #local VelArr = Povticular_VelArray(Name)
     #local LifeArr = Povticular_LifeArray(Name) 
-    #local AffArr = Povticular_AffectorArray(Name)      
+    #local AffArr = Povticular_AffectorArray(Name)
+    #local ColArr = Povticular_ColorArray(Name)
+    #local SizeArr = Povticular_SizeArray(Name)      
     
     #local Attr = Povticular_Name(Name)
     #local AffCount = DiskArray_GetCount(AffArr);
@@ -78,6 +83,9 @@
     #local ParticleLife = DA_Get(LifeArr, Index);
     #local Vel = DA_Get(VelArr, Index);
     #local Pos = DA_Get(PosArr, Index);
+    #local Life = DA_Get(LifeArr, Index);
+    #local Color = DA_Get(ColArr, Index);
+    #local Size = DA_Get(SizeArr, Index);
     
     //remove life and kill particles
     #local ParticleLife = ParticleLife - 1; 
@@ -91,7 +99,7 @@
         //apply effectors
         #for(I, 0, AffCount-1)
             #local ThisAffector = DiskArray_GetStr(AffArr, I)
-            Affector_Affect(ThisAffector, Pos, Vel)
+            Affector_Affect(ThisAffector, Pos, Vel, Size, Life, Color)
         #end
         //aply vel
         #local Pos = Pos + Vel*(1/Framerate);
@@ -99,6 +107,8 @@
         DA_Set(VelArr, Index, Vel)    
         DA_Set(PosArr, Index, Pos)
         DA_Set(LifeArr, Index, ParticleLife)
+        DA_Set(SizeArr, Index, Size)
+        DA_Set(ColArr, Index, Color)
     #end
 #end
 
@@ -106,6 +116,11 @@
     #local PosArr = Povticular_PosArray(Name)
     #local Pos = DA_Get(PosArr, Index);
     Pos;
+#end 
+
+#macro Povticular_ParticleCount(Name)
+    #local Count = DA_GetCount(Povticular_PosArray(Name));
+    Count;
 #end
 
 #macro Povticular_Name(Name)
@@ -144,14 +159,48 @@
 #end 
 
 #macro Povticular_Render(Name)
-    #local ParticleCount = DA_GetCount(Povticular_PosArray(Name))
+    #local PosArr = Povticular_PosArray(Name) 
+    #local ColArr = Povticular_ColorArray(Name)
+    #local SizeArr = Povticular_SizeArray(Name) 
+
+    #local ParticleCount = Povticular_ParticleCount(Name);
     #for(I, 0, ParticleCount-1)
-        #local Pos = Povticular_ParticlePos(Name, I);
+        #local Pos = DA_Get(PosArr, I);
+        #local Color = DA_Get(ColArr, I);
+        #local Size = DA_Get(SizeArr, I);
+    
         sphere{
-            Pos, 0.1   
+            Pos, Size   
             pigment{ Red } 
         }
     #end
+#end
+
+#macro Povticular_GetRenderString(Name)
+    #local PosArr = Povticular_PosArray(Name) 
+    #local ColArr = Povticular_ColorArray(Name)
+    #local SizeArr = Povticular_SizeArray(Name)
+    
+    #local FullStr = "" 
+
+    #local ParticleCount = Povticular_ParticleCount(Name);
+    #for(I, 0, ParticleCount-1)
+        #local Pos = DA_Get(PosArr, I);
+        #local Color = DA_Get(ColArr, I);
+        #local Size = DA_Get(SizeArr, I);
+        //TODO REMOVE THAT
+        #local Color = "Red"; 
+        
+        #local mStr = concat("sphere{\n\t<", vstr(3, Pos, ",", 0,-1), ">, ", str(Size, 0, -1), "\n\tpigment{", Color, "}\n}")
+        #local FullStr = concat(FullStr, "\n", mStr)
+    #end    
+    //DebugStr(FullStr)                                       
+    FullStr
+#end       
+
+#macro Povticular_CacheFrame(Name, FrameNumber)
+    #local mStr = Povticular_GetRenderString(Name)
+    StoreVar(concat("tmp_cache_", str(FrameNumber, 0, 0)), mStr)
 #end
 
 #macro Povticular_CalculateFrame(Name)

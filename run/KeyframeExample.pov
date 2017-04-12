@@ -20,32 +20,32 @@ camera{
 }      
 
 #if(clock = 0)
-    KeyframeHolder_Create("mKey")
-    //créé un keyframeHolder, en gros 
+    Keyframeholder_Create("mKey")
+    //créé un KeyframeHolder, en gros 
     //tu donne un nom au groupe de keyframe  
     //c'est un systeme de keyframe a la after effect / premiere etc
         
        
     
     //tu peux ensuite ajouter une keyframe en faisant soit : 
-    //KeyFrameHolder_Add(Name, Value, Time)
+    //Keyframeholder_Add(Name, Value, Time)
     //ou 
-    //KeyFrameHolder_AddWithCustomCurve(Name, Value, Time, LeftHandle, RightHandle)
-    //Name c'est le nom que t'as donné en faisant "KeyframeHolder_Create(Name)"
+    //Keyframeholder_AddWithCustomCurve(Name, Value, Time, LeftHandle, RightHandle)
+    //Name c'est le nom que t'as donné en faisant "Keyframeholder_Create(Name)"
     //Value c'est la valeur que la keyframe rendra au Time (numero de frame) indiqué
     /*
       je t'explique la difference entre les deux apres
       D'abord on va voir comment l'utiliser, c'est hyper simple : 
       pour avoir la valeur a une certaine frame tu fais : 
-      KeyFrameHolder_GetValueAtTime(Name, Time, Interpolation)  
+      Keyframeholder_GetValueAtTime(Name, Time, Interpolation)  
       
       Le deux premier arguments sont les meme qu'avant
       Interpolation est un string (text) qui represente l'interpolation entre chaque clef
       Pour l'instant tu as le choix entre "SmoothStep", "AccelerateDeccelerate" et "CustomCurve"
-      tu peux ajouter tes propres interpolator en modifiant la fonction "KeyFrameHolder_Interpolator" dans Keyframe.inc
+      tu peux ajouter tes propres interpolator en modifiant la fonction "Keyframeholder_Interpolator" dans Keyframe.inc
       
       Pour utiliser L'interpolator CustomCurve: 
-      Cet interpolator est lié a "KeyFrameHolder_AddWithCustomCurve" et si tu n'as pas ajouter tes 
+      Cet interpolator est lié a "Keyframeholder_AddWithCustomCurve" et si tu n'as pas ajouter tes 
       keyframes en utilisant cette fonction et que tu essaie d'utiliser le CustomCurve interpolator 
       ca va crashé 
       
@@ -61,11 +61,11 @@ camera{
     */
     //example d'utilisation avec la custom curve
     
-    KeyFrameHolder_AddWithCustomCurve("mKey", 0, 0, <1, 1>, <0, 0>)
-    KeyFrameHolder_AddWithCustomCurve("mKey", 0, 10, <1, 1>, <0.5, 0>)
-    KeyFrameHolder_AddWithCustomCurve("mKey", 2, 20, <0.5, 1>, <0, 0>)
-    KeyFrameHolder_AddWithCustomCurve("mKey", 1, 40, <1, 1>, <0, 0>)
-    KeyFrameHolder_AddWithCustomCurve("mKey", 0, 50, <1, 1>, <0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 0, <1, 1>, <0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 10, <1, 1>, <0.5, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 2, 20, <0.5, 1>, <0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 1, 40, <1, 1>, <0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 50, <1, 1>, <0, 0>)
     //left handle default at <1,1> before it's always the top right
     //right handle default at <0,0> because it's always the bot left
    
@@ -75,7 +75,7 @@ camera{
  //affiche les 70 premiere frame en une seule image, tu peux enlever la for loop et remplacer
  //I par frame_number pour avoir une image a la fois
 #for(I, 0, 70)                            
-    #local Value = KeyFrameHolder_GetValueAtTime("mKey", I, "CustomCurve");
+    #local Value = Keyframeholder_GetValueAtTime("mKey", I, "CustomCurve");
     //la ligne suivante affiche la valeur dans la console
     #debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
     sphere{

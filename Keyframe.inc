@@ -8,7 +8,7 @@
 /***********************   
 
 Keyframe.inc usage : 
-Create a keyframeHolder by calling "create" and giving it a unique name
+Create a Keyframeholder by calling "create" and giving it a unique name
 Add values at times by calling Add
 You can also add values at time with custom bezier handles
 by calling AddWithCustomCurve, leftHandle should default at <0,0> and rightHandle at <1,1>
@@ -18,14 +18,14 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
 
 ************************/
 
-#macro KeyframeHolder_Create(Name)
+#macro Keyframeholder_Create(Name)
     #local TimeArrayName = concat(Name, ".times");
     #local ValuesArrayName = concat(Name, ".values");
     DiskArray_CreateDiskArray(TimeArrayName)
     DiskArray_CreateDiskArray(ValuesArrayName)
 #end
 
-#macro KeyFrameHolder_Add(Name, Value, Time)
+#macro Keyframeholder_Add(Name, Value, Time)
     #local TimeArrayName = concat(Name, ".times");
     #local ValuesArrayName = concat(Name, ".values");
     DiskArray_Add(TimeArrayName, Time)
@@ -33,7 +33,7 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
 #end 
 
 //the right and left handle are vectors relative to the point     
-#macro KeyFrameHolder_AddWithCustomCurve(Name, Value, Time, LeftHandle, RightHandle)
+#macro Keyframeholder_AddWithCustomCurve(Name, Value, Time, LeftHandle, RightHandle)
     #local TimeArrayName = concat(Name, ".times");
     #local ValuesArrayName = concat(Name, ".values");
     DiskArray_Add(TimeArrayName, Time)
@@ -44,7 +44,7 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
     setAttr(VarName, "rightHandle", RightHandle)
 #end                                   
 
-#macro KeyFrameHolder_GetValueAtTime(Name, Time, Interpolator)
+#macro Keyframeholder_GetValueAtTime(Name, Time, Interpolator)
     #local TimeArrayName = concat(Name, ".times");
     #local ValuesArrayName = concat(Name, ".values");
     #local Count = DiskArray_GetCount(TimeArrayName);
@@ -59,7 +59,7 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
                 #local From = DiskArray_GetFloat(ValuesArrayName, I);
                 #local To = DiskArray_GetFloat(ValuesArrayName, I+1); 
                 #local TimeVal = (Time - ThisTime)/(NextTime-ThisTime);
-                #local Interpolation = KeyFrameHolder_Interpolator(From, To, TimeVal, Interpolator, I, I+1);
+                #local Interpolation = Keyframeholder_Interpolator(From, To, TimeVal, Interpolator, I, I+1);
                 #break
             #end
         #end
@@ -70,12 +70,12 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
     Interpolation;
 #end  
 
-#macro KeyFrameHolder_LinearInterpolation(From, To, Val)
+#macro Keyframeholder_LinearInterpolation(From, To, Val)
      #declare Int = From + (To - From)*Val;
      Int;
 #end 
 
-#macro KeyFrameHolder_Interpolator(From, To, Val, Interpolator, CountFrom, CountTo) 
+#macro Keyframeholder_Interpolator(From, To, Val, Interpolator, CountFrom, CountTo) 
     #local Inter = Val;
     #if(Interpolator = "SmoothStep")
         #local Inter = Val * Val * (3 - (2 * Val));
@@ -93,19 +93,19 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
         #local SHandle = getVectAttr(VarNameTo, "leftHandle"); 
        // #debug concat("\n", str(Val, 0, -1), "\n")
         //trouver sur la courbe la valeur de y pour laquelle x = Val
-        #local Inter = KeyFrameHolder_Evaluate(Val, Start, FHandle, SHandle, End, 50);
+        #local Inter = Keyframeholder_Evaluate(Val, Start, FHandle, SHandle, End, 50);
         //#debug concat("\n", str(Vect.x, 0, -1), ":", str(Vect.y, 0, -1) ,"\n") 
     #end
-    #local Inter = KeyFrameHolder_LinearInterpolation(From, To, Inter); 
+    #local Inter = Keyframeholder_LinearInterpolation(From, To, Inter); 
     Inter;
 #end  
 
 //trouver sur la courbe la valeur de y pour laquelle x = Val
-#macro KeyFrameHolder_Evaluate(Val, Start, FHandle, SHandle, End, Res)
+#macro Keyframeholder_Evaluate(Val, Start, FHandle, SHandle, End, Res)
     #local Return = Val;
     #for(I, 0, Res)
         #local X = I/Res;
-        #local Vect = KeyFrameHolder_BezierPoint2D(X, Start, FHandle, SHandle, End);
+        #local Vect = Keyframeholder_BezierPoint2D(X, Start, FHandle, SHandle, End);
         #if(Vect.x >= Val)
             #local Return = Vect.y;
             #break
@@ -114,14 +114,14 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
     Return;
 #end
 
-#macro KeyFrameHolder_Evaluate2(Val, Start, FHandle, SHandle, End, Iterations)
+#macro Keyframeholder_Evaluate2(Val, Start, FHandle, SHandle, End, Iterations)
     #local Return = Val;
     #local Low = 0;
     #local High = 1;
     #local Mid = 0.5;
      
     #for(I, 0, Iterations)
-        #local Vect = KeyFrameHolder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);
+        #local Vect = Keyframeholder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);
         #if(Val < Vect.x)
             #local High = Mid;      
         #else 
@@ -134,13 +134,13 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
         #end
         #local Mid = Low + (High-Low)/2;
     #end     
-    #local Vect = KeyFrameHolder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);     
+    #local Vect = Keyframeholder_BezierPoint2D(Mid, Start, FHandle, SHandle, End);     
     #local Return = Vect.x;
     
     Return;
 #end 
 
-#macro KeyFrameHolder_PartialBezier(T, A, B, C, D)
+#macro Keyframeholder_PartialBezier(T, A, B, C, D)
     #local C1 =  D - (3*C) + (3*B) - A;
     #local C2 = (3*C) - (6*B) + (3*A);
     #local C3 = (3*B) - (3*A);
@@ -150,9 +150,9 @@ if you use CustomCurve every keyframe must have a custom curve associated, other
 #end 
                                    
 //T=% on the curve                                   
-#macro KeyFrameHolder_BezierPoint2D(T, Start, FHandle, SHandle, End)
-    #local PX = KeyFrameHolder_PartialBezier(T, Start.x, FHandle.x, SHandle.x, End.x);
-    #local PY = KeyFrameHolder_PartialBezier(T, Start.y, FHandle.y, SHandle.y, End.y);
+#macro Keyframeholder_BezierPoint2D(T, Start, FHandle, SHandle, End)
+    #local PX = Keyframeholder_PartialBezier(T, Start.x, FHandle.x, SHandle.x, End.x);
+    #local PY = Keyframeholder_PartialBezier(T, Start.y, FHandle.y, SHandle.y, End.y);
     #local Result = <PX, PY>;
     Result;
 #end 
