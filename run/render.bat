@@ -1,0 +1,1 @@
+ffmpeg -framerate 24 -i %1 -c:v h264 -y anim.mp4

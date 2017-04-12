@@ -1,14 +1,22 @@
 #include "Povticular.inc"   
-#declare sd = seed(frame_number);
+#include "Affector.inc"
+
+#declare sd = seed(frame_number*5667);
                            
-#if(clock = 0)
+#if(clock = 0) 
     Povticular_CreateEmitter("T")
-#end
+    Affector_Create("aff", "ConstantForce") 
+    setAttr("aff", "force", <0, -1, 0>)
+  
+    Povticular_AddAffector("T", "aff")
+#end                   
+
 
 
 
 #if(0)
-    #for(I, 0, 24)
+    #for(I, 0, 48) 
+        #debug concat("\nframe=", str(I, 0, 0), "\n")
         Povticular_CalculateFrame("T")
         Povticular_Render("T")
     #end
@@ -28,5 +36,7 @@ camera{
     up y
     location <-5, 3, -10> 
     look_at < 0,0,0 > 
-    angle 80
-}
+    angle 120
+}  
+
+//trajector d'anim etc

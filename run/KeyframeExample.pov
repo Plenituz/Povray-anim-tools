@@ -31,11 +31,8 @@ camera{
     //KeyFrameHolder_Add(Name, Value, Time)
     //ou 
     //KeyFrameHolder_AddWithCustomCurve(Name, Value, Time, LeftHandle, RightHandle)
-    
     //Name c'est le nom que t'as donné en faisant "KeyframeHolder_Create(Name)"
     //Value c'est la valeur que la keyframe rendra au Time (numero de frame) indiqué
-    
-    
     /*
       je t'explique la difference entre les deux apres
       D'abord on va voir comment l'utiliser, c'est hyper simple : 
