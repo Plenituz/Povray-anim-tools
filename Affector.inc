@@ -8,21 +8,21 @@
     setAttr(Name, "type", concat("\"", Type, "\""))
 #end                             
 
-#macro Affector_Affect(Name, Pos, Vel, Size, Life, Color)
+#macro Affector_Affect(Name, Pos, Vel, Size, Life, Color, MaxLife)
     #local Type = getStrAttr(Name, "type")
-    #local Func = concat("Affector_", Type, "(Name, Pos, Vel, Size, Life, Color)");
+    #local Func = concat("Affector_", Type, "(Name, Pos, Vel, Size, Life, Color, MaxLife)");
     Parse_String(Func)
 #end
 
-#macro Affector_ConstantForce(Name, Pos, Vel, Size, Life, Color)
+#macro Affector_ConstantForce(Name, Pos, Vel, Size, Life, Color, MaxLife)
     #local Force = getVectAttr(Name, "force");
     #declare Vel = Vel + Force;
 #end 
 
-#macro Affector_SizeOverLife(Name, Pos, Vel, Size, Life, Color)
+#macro Affector_SizeOverLife(Name, Pos, Vel, Size, Life, Color, MaxLife)
     #local Interpolator = getStrAttr(Name, "interpolator")
     #local KeyframeHolder = getStrAttr(Name, "keyframeHolder")   
-    #declare Size = Keyframeholder_GetValueAtTime(KeyframeHolder, Life, Interpolator);
+    #declare Size = Keyframeholder_GetValueAtTime(KeyframeHolder, Life/MaxLife, Interpolator);
    // DebugStr(concat("life=", str(Life, 0, 0), " Size=", str(Size, 0, -1)))
 #end
 

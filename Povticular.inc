@@ -18,7 +18,7 @@
 #macro Povticular_CreateEmitter(Name) 
     #local Attr = Povticular_Name(Name)
     setAttr(Attr, "emitterPos", <0, 0, 0>)
-    setAttr(Attr, "maxCount", 1000)                 //max number of particle
+    setAttr(Attr, "maxCount", 10)                 //max number of particle
     setAttr(Attr, "particlePerFrame", 10)           //number of particle emitted every frame
     setAttr(Attr, "framerate", 24)                  //render framerate, too calculate life and stuff
     setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies    
@@ -29,13 +29,15 @@
     DA_Create(Povticular_ColorArray(Name), 100)
     DA_Create(Povticular_SizeArray(Name), 100)
     DA_Create(Povticular_LifeArray(Name), 100)
+    DA_Create(Povticular_MaxLifeArray(Name), 100)
     
     DA_LoadInMemory(Povticular_PosArray(Name))
     DA_LoadInMemory(Povticular_VelArray(Name))
    // DA_LoadInMemory(Povticular_AffectorArray(Name))
     DA_LoadInMemory(Povticular_ColorArray(Name))
     DA_LoadInMemory(Povticular_SizeArray(Name))
-    DA_LoadInMemory(Povticular_LifeArray(Name)) 
+    DA_LoadInMemory(Povticular_LifeArray(Name))
+    DA_LoadInMemory(Povticular_MaxLifeArray(Name)) 
 #end
 
 #macro Povticular_AddAffector(Name, AffectorName)  
@@ -57,7 +59,8 @@
         DA_Add(Povticular_VelArray(Name), BaseVel)
         DA_Add(Povticular_ColorArray(Name), <1, 0.5, 0>)
         DA_Add(Povticular_SizeArray(Name), 0.1)
-        DA_Add(Povticular_LifeArray(Name), Life)
+        DA_Add(Povticular_LifeArray(Name), 0)
+        DA_Add(Povticular_MaxLifeArray(Name), Life)
     #end
 #end
 
@@ -67,6 +70,7 @@
     DA_Remove(Povticular_ColorArray(Name), Index)
     DA_Remove(Povticular_SizeArray(Name), Index)
     DA_Remove(Povticular_LifeArray(Name), Index)
+    DA_Remove(Povticular_MaxLifeArray(Name), Index)
 #end
 
 #macro Povticular_UpdateParticle(Name, Index) 
@@ -75,7 +79,8 @@
     #local LifeArr = Povticular_LifeArray(Name) 
     #local AffArr = Povticular_AffectorArray(Name)
     #local ColArr = Povticular_ColorArray(Name)
-    #local SizeArr = Povticular_SizeArray(Name)      
+    #local SizeArr = Povticular_SizeArray(Name)
+    #local MaxLifeArr = Povticular_MaxLifeArray(Name)      
     
     #local Attr = Povticular_Name(Name)
     #local AffCount = DiskArray_GetCount(AffArr);
@@ -85,12 +90,13 @@
     #local Pos = DA_Get(PosArr, Index);
     #local Life = DA_Get(LifeArr, Index);
     #local Color = DA_Get(ColArr, Index);
-    #local Size = DA_Get(SizeArr, Index);
+    #local Size = DA_Get(SizeArr, Index); 
+    #local MaxLife = DA_Get(MaxLifeArr, Index);
     
     //remove life and kill particles
-    #local ParticleLife = ParticleLife - 1; 
+    #local ParticleLife = ParticleLife + 1; 
     //cant remove directly here because le list is being iterated over 
-    #if(ParticleLife < 0)
+    #if(ParticleLife > MaxLife)
         AddToArray(DelList, Index)
         //DebugFloatStr("marking as remove=", Index)
         //add the index to the delList which will delete the particles at the end of the frame
@@ -99,9 +105,9 @@
         //apply effectors
         #for(I, 0, AffCount-1)
             #local ThisAffector = DiskArray_GetStr(AffArr, I)
-            Affector_Affect(ThisAffector, Pos, Vel, Size, Life, Color)
+            Affector_Affect(ThisAffector, Pos, Vel, Size, Life, Color, MaxLife)
         #end
-        //aply vel
+        //apply vel
         #local Pos = Pos + Vel*(1/Framerate);
         
         DA_Set(VelArr, Index, Vel)    
@@ -109,6 +115,7 @@
         DA_Set(LifeArr, Index, ParticleLife)
         DA_Set(SizeArr, Index, Size)
         DA_Set(ColArr, Index, Color)
+        DA_Set(MaxLifeArr, Index, MaxLife)
     #end
 #end
 
@@ -155,6 +162,11 @@
 
 #macro Povticular_LifeArray(Name)
     #local N = concat(Name, "_lifes")
+    N
+#end 
+
+#macro Povticular_MaxLifeArray(Name)
+    #local N = concat(Name, "_maxlifes")
     N
 #end 
 
@@ -210,6 +222,7 @@
     DA_LoadInMemory(Povticular_ColorArray(Name))
     DA_LoadInMemory(Povticular_SizeArray(Name))
     DA_LoadInMemory(Povticular_LifeArray(Name))
+    DA_LoadInMemory(Povticular_MaxLifeArray(Name))
     #declare DelList = array[1]{-1}  
 
     
@@ -235,6 +248,7 @@
     DA_SaveToDisk(Povticular_ColorArray(Name))
     DA_SaveToDisk(Povticular_SizeArray(Name))
     DA_SaveToDisk(Povticular_LifeArray(Name))
+    DA_SaveToDisk(Povticular_MaxLifeArray(Name))
 #end
 
 #end // end povticular.inc
