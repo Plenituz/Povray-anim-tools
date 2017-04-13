@@ -2,7 +2,7 @@
 #declare AFFECTOR_INc_VAR = 1;  
 
 #include "strings.inc"
-#include "Keyframe.inc"
+#include "KeyframeDA.inc"
 
 #macro Affector_Create(Name, Type)
     setAttr(Name, "type", concat("\"", Type, "\""))

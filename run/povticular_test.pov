@@ -1,6 +1,6 @@
 #include "Povticular.inc"   
 #include "Affector.inc"
-#include "Keyframe.inc"
+#include "KeyframeDA.inc"
 
 #declare sd = seed(frame_number*5667);
                            
@@ -18,11 +18,13 @@
     Keyframeholder_Add("mKey", 0.1, 0.5)
     Keyframeholder_Add("mKey", 0.5, 0.75)
     Keyframeholder_Add("mKey", 0.1, 1)
+    Keyframeholder_Finish("mKey")
     
     Keyframeholder_Create("emit")
     Keyframeholder_Add("emit", 0, 0)
     Keyframeholder_Add("emit", 10, 12)
     Keyframeholder_Add("emit", 0, 24)
+    Keyframeholder_Finish("emit")
     
     
     Povticular_AddAffector("T", "Aff2")
@@ -30,7 +32,7 @@
 #end
 
 #declare TF = Keyframeholder_GetValueAtTime("emit", frame_number, "AccelerateDeccelerate");                                 
-//setAttr(Povticular_Name("T"), "emitterPos", <TF, 0, 0>) 
+setAttr(Povticular_Name("T"), "emitterPos", <TF, 0, 0>) 
 
 #if(frame_number = 25)
     setAttr(Povticular_Name("T"), "particlePerFrame", 0)
@@ -42,7 +44,7 @@
 
 
 #if(0)
-    #for(I, 0, 24) 
+    #for(I, 0, 5) 
         #debug concat("\nframe=", str(I, 0, 0), "\n")
         Povticular_CalculateFrame("T")
         Povticular_Render("T")
@@ -51,7 +53,7 @@
     #end
 #else
     Povticular_CalculateFrame("T")
-    //Povticular_CacheFrame("T", frame_number)
+    Povticular_CacheFrame("T", frame_number)
     Povticular_Render("T")
     //object{myCache[frame_number]}
 #end

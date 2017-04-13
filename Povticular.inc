@@ -1,7 +1,7 @@
 #ifndef(POVTICULAR_INC_VAR)
 #declare POVTICULAR_INC_VAR = 1; 
 
-#include "DiskArray2.inc" 
+#include "DiskArray2.inc"
 #include "DiskArray.inc" 
 #include "IO.inc"
 #include "colors.inc"
@@ -18,7 +18,7 @@
 #macro Povticular_CreateEmitter(Name) 
     #local Attr = Povticular_Name(Name)
     setAttr(Attr, "emitterPos", <0, 0, 0>)
-    setAttr(Attr, "maxCount", 10)                 //max number of particle
+    setAttr(Attr, "maxCount", 1000)                 //max number of particle
     setAttr(Attr, "particlePerFrame", 10)           //number of particle emitted every frame
     setAttr(Attr, "framerate", 24)                  //render framerate, too calculate life and stuff
     setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies    
@@ -183,7 +183,7 @@
     
         sphere{
             Pos, Size   
-            pigment{ Red } 
+            pigment{ color rgb Color } 
         }
     #end
 #end
@@ -199,11 +199,9 @@
     #for(I, 0, ParticleCount-1)
         #local Pos = DA_Get(PosArr, I);
         #local Color = DA_Get(ColArr, I);
-        #local Size = DA_Get(SizeArr, I);
-        //TODO REMOVE THAT
-        #local Color = "Red"; 
+        #local Size = DA_Get(SizeArr, I); 
         
-        #local mStr = concat("sphere{\n\t<", vstr(3, Pos, ",", 0,-1), ">, ", str(Size, 0, -1), "\n\tpigment{", Color, "}\n}")
+        #local mStr = concat("sphere{\n\t<", vstr(3, Pos, ",", 0,-1), ">, ", str(Size, 0, -1), "\n\tpigment{ color rgb <", vstr(3, Color, ",", 0, -1), ">}\n}")
         #local FullStr = concat(FullStr, "\n", mStr)
     #end    
     //DebugStr(FullStr)                                       

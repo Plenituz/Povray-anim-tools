@@ -1,5 +1,5 @@
 #include "colors.inc" 
-#include "Keyframe.inc" 
+#include "KeyframeDA.inc" 
 
 /*
   Add the path to the Keyframes.inc, IO.inc and DiskArray.inc to the command line
@@ -65,7 +65,8 @@ camera{
     Keyframeholder_AddWithCustomCurve("mKey", 0, 10, <1, 1>, <0.5, 0>)
     Keyframeholder_AddWithCustomCurve("mKey", 2, 20, <0.5, 1>, <0, 0>)
     Keyframeholder_AddWithCustomCurve("mKey", 1, 40, <1, 1>, <0, 0>)
-    Keyframeholder_AddWithCustomCurve("mKey", 0, 50, <1, 1>, <0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 50, <1, 1>, <0, 0>) 
+    Keyframeholder_Finish("mKey")
     //left handle default at <1,1> before it's always the top right
     //right handle default at <0,0> because it's always the bot left
    
