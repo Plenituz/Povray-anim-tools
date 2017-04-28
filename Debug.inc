@@ -10,6 +10,10 @@
     #debug concat("\n", Txt, str(Float, 0, -1), "\n")
 #end
 
+#macro DebugVectStr(Txt, Float)
+    #debug concat("\n", Txt, vstr(3, Float, ",",  0, -1), "\n")
+#end
+
 #macro DebugStrArray(Txt, Arr)
     #local Len = dimension_size(Arr, 1);
     #for(I, 0, Len-1)
