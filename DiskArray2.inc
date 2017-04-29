@@ -11,7 +11,8 @@
 #macro DA_Create(Name, MaxSize)
     setAttr(Name, "count", 0)
     setAttr(Name, "realCount", MaxSize)
-    setAttr(Name, "array", "")    
+    setAttr(Name, "array", "")
+    //separating count realcount and array in 3 files becaus eyou might want to only read the count some frames    
 #end               
 //count is how many element the array has
 #macro DA_GetCount(Name)

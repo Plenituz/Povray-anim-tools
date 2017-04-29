@@ -28,6 +28,8 @@ keyframes should be added in the right order, the list doesn't sort itself
     #local ValuesArrayName = concat(Name, "_values");
     #local LeftHandleArrayName = concat(Name, "_lefts");
     #local RightHandleArrayName = concat(Name, "_rights");
+    //I am separating the times values, lefts and right in different files because you might need to read only 
+    //one of those values per frame sometimes
     
     DA_Create(TimeArrayName, 10)
     DA_Create(ValuesArrayName, 10)
