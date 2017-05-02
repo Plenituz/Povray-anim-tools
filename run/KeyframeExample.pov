@@ -61,11 +61,11 @@ camera{
     */
     //example d'utilisation avec la custom curve
     
-    Keyframeholder_AddWithCustomCurve("mKey", 0, 0, <1, 1>, <0, 0>)
-    Keyframeholder_AddWithCustomCurve("mKey", 0, 10, <1, 1>, <0.5, 0>)
-    Keyframeholder_AddWithCustomCurve("mKey", 2, 20, <0.5, 1>, <0, 0>)
-    Keyframeholder_AddWithCustomCurve("mKey", 1, 40, <1, 1>, <0, 0>)
-    Keyframeholder_AddWithCustomCurve("mKey", 0, 50, <1, 1>, <0, 0>) 
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 0, <1, 1, 0>, <0, 0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 10, <1, 1, 0>, <0.5, 0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 2, 20, <0.5, 1, 0>, <0, 0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 1, 40, <1, 1, 0>, <0, 0, 0>)
+    Keyframeholder_AddWithCustomCurve("mKey", 0, 50, <1, 1, 0>, <0, 0, 0>) 
     Keyframeholder_Finish("mKey")
     //left handle default at <1,1> before it's always the top right
     //right handle default at <0,0> because it's always the bot left
@@ -75,12 +75,12 @@ camera{
             
  //affiche les 70 premiere frame en une seule image, tu peux enlever la for loop et remplacer
  //I par frame_number pour avoir une image a la fois
-#for(I, 0, 70)                            
-    #local Value = Keyframeholder_GetValueAtTime("mKey", I, "CustomCurve");
+//#for(I, 0, 70)                            
+    #local Value = Keyframeholder_GetValueAtTime("mKey", frame_number, "SmoothStep");
     //la ligne suivante affiche la valeur dans la console
-    #debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
+    //#debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
     sphere{
-        <I/5, Value, 0>, .1
+        <frame_number/5, Value, 0>, .1
         pigment{Red}
     }
-#end 
+//#end 

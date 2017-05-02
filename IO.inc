@@ -79,7 +79,7 @@
 
 #macro ReadArray(Path, Len)
     #local ArrOut = array[Len] 
-    #fopen mFile Path read
+    #fopen mFile Path read 
     #for(I, 0, Len-1)
         #read (mFile, Reading)
         #local ArrOut[I] = Reading;                            
