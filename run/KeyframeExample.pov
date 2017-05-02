@@ -57,7 +57,8 @@ camera{
       si t'as des question/j'ai mal expliqué demande moi ca sera plus simple a expliquer irl    
       
  
-    
+        Si tu utilise KeyframeDA.inc et veut ajouter une custom curve, tu dois ajouter une composante Z a 
+        tes vecteurs de handle sinon ca plante 
     */
     //example d'utilisation avec la custom curve
     
