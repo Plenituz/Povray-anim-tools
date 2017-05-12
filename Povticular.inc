@@ -21,7 +21,9 @@
     setAttr(Attr, "maxCount", 1000)                 //max number of particle
     setAttr(Attr, "particlePerFrame", 10)           //number of particle emitted every frame
     setAttr(Attr, "framerate", 24)                  //render framerate, too calculate life and stuff
-    setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies    
+    setAttr(Attr, "particleLifeTimeInFrame", 24)    //after X frame the particle dies
+    setAttr(Attr, "customPigment", "\"null\"")          //pigment that will be used instead of color if set  
+    setAttr(Attr, "customObjectModifier", "\"null\"")    
     
     DA_Create(Povticular_PosArray(Name), 100)
     DA_Create(Povticular_VelArray(Name), 100)
@@ -30,6 +32,7 @@
     DA_Create(Povticular_SizeArray(Name), 100)
     DA_Create(Povticular_LifeArray(Name), 100)
     DA_Create(Povticular_MaxLifeArray(Name), 100)
+    DA_Create(Povticular_CustomDataArray(Name), 100)
     
     DA_LoadInMemory(Povticular_PosArray(Name))
     DA_LoadInMemory(Povticular_VelArray(Name))
@@ -37,7 +40,9 @@
     DA_LoadInMemory(Povticular_ColorArray(Name))
     DA_LoadInMemory(Povticular_SizeArray(Name))
     DA_LoadInMemory(Povticular_LifeArray(Name))
-    DA_LoadInMemory(Povticular_MaxLifeArray(Name)) 
+    DA_LoadInMemory(Povticular_MaxLifeArray(Name))
+    DA_LoadInMemory(Povticular_CustomDataArray(Name))
+     
 #end
 
 #macro Povticular_AddAffector(Name, AffectorName)  
@@ -57,10 +62,11 @@
         
         DA_Add(Povticular_PosArray(Name), EmitterPos)
         DA_Add(Povticular_VelArray(Name), BaseVel)
-        DA_Add(Povticular_ColorArray(Name), <1, 0.5, 0>)
+        DA_Add(Povticular_ColorArray(Name), <1, 1, 1>)
         DA_Add(Povticular_SizeArray(Name), 0.1)
         DA_Add(Povticular_LifeArray(Name), 0)
         DA_Add(Povticular_MaxLifeArray(Name), Life)
+        DA_Add(Povticular_CustomDataArray(Name), 0)
     #end
 #end
 
@@ -70,7 +76,8 @@
     DA_Remove(Povticular_ColorArray(Name), Index)
     DA_Remove(Povticular_SizeArray(Name), Index)
     DA_Remove(Povticular_LifeArray(Name), Index)
-    DA_Remove(Povticular_MaxLifeArray(Name), Index)
+    DA_Remove(Povticular_MaxLifeArray(Name), Index) 
+    DA_Remove(Povticular_CustomDataArray(Name), Index)
 #end
 
 #macro Povticular_UpdateParticle(Name, Index) 
@@ -80,7 +87,8 @@
     #local AffArr = Povticular_AffectorArray(Name)
     #local ColArr = Povticular_ColorArray(Name)
     #local SizeArr = Povticular_SizeArray(Name)
-    #local MaxLifeArr = Povticular_MaxLifeArray(Name)      
+    #local MaxLifeArr = Povticular_MaxLifeArray(Name)
+    #local CustomDataArr = Povticular_CustomDataArray(Name)      
     
     #local Attr = Povticular_Name(Name)
     #local AffCount = DiskArray_GetCount(AffArr);
@@ -92,6 +100,7 @@
     #local Color = DA_Get(ColArr, Index);
     #local Size = DA_Get(SizeArr, Index); 
     #local MaxLife = DA_Get(MaxLifeArr, Index);
+    #local CustomData = DA_Get(CustomDataArr, Index);
     
     //remove life and kill particles
     #local ParticleLife = ParticleLife + 1; 
@@ -105,7 +114,7 @@
         //apply effectors
         #for(I, 0, AffCount-1)
             #local ThisAffector = DiskArray_GetStr(AffArr, I)
-            Affector_Affect(ThisAffector, Pos, Vel, Size, Life, Color, MaxLife)
+            Affector_Affect(ThisAffector, Pos, Vel, Size, Life, Color, MaxLife, CustomData)
         #end
         //apply vel
         #local Pos = Pos + Vel*(1/Framerate);
@@ -116,6 +125,7 @@
         DA_Set(SizeArr, Index, Size)
         DA_Set(ColArr, Index, Color)
         DA_Set(MaxLifeArr, Index, MaxLife)
+        DA_Set(CustomDataArr, Index, CustomData)
     #end
 #end
 
@@ -163,6 +173,11 @@
 #macro Povticular_LifeArray(Name)
     #local N = concat(Name, "_lifes")
     N
+#end
+
+#macro Povticular_CustomDataArray(Name)
+    #local N = concat(Name, "_customData")
+    N
 #end 
 
 #macro Povticular_MaxLifeArray(Name)
@@ -173,17 +188,38 @@
 #macro Povticular_Render(Name)
     #local PosArr = Povticular_PosArray(Name) 
     #local ColArr = Povticular_ColorArray(Name)
-    #local SizeArr = Povticular_SizeArray(Name) 
+    #local SizeArr = Povticular_SizeArray(Name)
+    #local CustomPigment = getStrAttr(Povticular_Name(Name), "customPigment")
+    #local CustomModifier = getStrAttr(Povticular_Name(Name), "customObjectModifier") 
 
     #local ParticleCount = Povticular_ParticleCount(Name);
     #for(I, 0, ParticleCount-1)
         #local Pos = DA_Get(PosArr, I);
         #local Color = DA_Get(ColArr, I);
         #local Size = DA_Get(SizeArr, I);
-    
+        #local CustomData = DA_Get(Povticular_CustomDataArray(Name), I);
+        
+        /*#local Vel = DA_Get(Povticular_VelArray(Name), I);  
+        #local PointOnLine = Affector_Utils_GetClosestPoint(<0, 0, 0>, <4.064178, 0, 2.57115>, Pos);
+        DrawLineColor(Pos, PointOnLine, Grey)       
+        DrawVector(Pos, Vel)   */
+        
+        
         sphere{
-            Pos, Size   
-            pigment{ color rgb Color } 
+            Pos, Size
+            #if(CustomPigment = "null")   
+                pigment{ color rgbt Color }
+            #else 
+                #if(CustomPigment = "none")
+                    //do nothing
+                #else
+                    pigment{Parse_String(CustomPigment)}
+                #end
+            #end
+            
+            #if(CustomModifier != "null")
+                Parse_String(CustomModifier)
+            #end 
         }
     #end
 #end
@@ -191,7 +227,22 @@
 #macro Povticular_GetRenderString(Name)
     #local PosArr = Povticular_PosArray(Name) 
     #local ColArr = Povticular_ColorArray(Name)
-    #local SizeArr = Povticular_SizeArray(Name)
+    #local SizeArr = Povticular_SizeArray(Name)   
+    #local CustomPigment = getStrAttr(Povticular_Name(Name), "customPigment")
+    #local CustomModifier = getStrAttr(Povticular_Name(Name), "customObjectModifier")
+    
+    #if(CustomPigment = "null")
+        #local CustomPigment = "pigment{ color rgb <", vstr(3, Color, ",", 0, -1), ">}"
+    #else
+        #if(CustomPigment = "none")
+             #local CustomPigment = ""
+        #else
+            #local CustomPigment = concat("pigment{", CustomPigment, "}")
+        #end 
+    #end 
+    #if(CustomModifier = "null")
+        #local CustomModifier = ""
+    #end
     
     #local FullStr = "" 
 
@@ -201,7 +252,8 @@
         #local Color = DA_Get(ColArr, I);
         #local Size = DA_Get(SizeArr, I); 
         
-        #local mStr = concat("sphere{\n\t<", vstr(3, Pos, ",", 0,-1), ">, ", str(Size, 0, -1), "\n\tpigment{ color rgb <", vstr(3, Color, ",", 0, -1), ">}\n}")
+        #local mStr = concat("sphere{\n\t<", vstr(3, Pos, ",", 0,-1), ">, ", str(Size, 0, -1), "\n\t", CustomPigment, "\n\t",
+            CustomModifier, "\n}")
         #local FullStr = concat(FullStr, "\n", mStr)
     #end    
     //DebugStr(FullStr)                                       
@@ -221,6 +273,7 @@
     DA_LoadInMemory(Povticular_SizeArray(Name))
     DA_LoadInMemory(Povticular_LifeArray(Name))
     DA_LoadInMemory(Povticular_MaxLifeArray(Name))
+    DA_LoadInMemory(Povticular_CustomDataArray(Name))
     #declare DelList = array[1]{-1}  
 
     
@@ -247,6 +300,7 @@
     DA_SaveToDisk(Povticular_SizeArray(Name))
     DA_SaveToDisk(Povticular_LifeArray(Name))
     DA_SaveToDisk(Povticular_MaxLifeArray(Name))
+    DA_SaveToDisk(Povticular_CustomDataArray(Name))
 #end
 
 #end // end povticular.inc

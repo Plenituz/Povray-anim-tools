@@ -27,7 +27,7 @@
   }
 */
 #macro Voxelize(VectsFirst, VectsSecond, Obj)
-    #local Precision = 100;  
+    #local Precision = 5;  
     //A 100 : 3m17           
     
     /*box{
@@ -240,7 +240,7 @@ camera{
     up y
     location <-5, 5, -20> 
     look_at < 0,0,0 > 
-    angle 100
+    angle 80
 }
     
 #end
