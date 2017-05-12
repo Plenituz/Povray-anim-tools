@@ -1,0 +1,252 @@
+<HTML><HEAD><TITLE>Object Bender Include File</TITLE></HEAD>
+
+<FONT FACE="Arial, Helvetica, Switzerland"><BODY BGCOLOR=#FFFFFF>
+
+<TABLE WIDTH=100% BORDER=0 CELLPADDING=10><TR><TD BGCOLOR=#C0C0C0 ALIGN=CENTER>
+<FONT SIZE=+2><B>OBJECT BENDER INCLUDE FILE </B></FONT><FONT SIZE=+1><I>for Persistence of Vision 3.x</I></FONT>
+</TD></TR></TABLE>
+
+<I>
+<P>Created by Chris Colefax, 13 June 1997
+<BR>Updated 21 July 1997: fixed bend_start bug
+<BR>Updated 13 July 1998: updated for POV-Ray 3.1,
+                      added <A HREF="#twist_angle">twist_angle</A> option,  
+                      fixed Domain Error caused by some compilers
+</I>
+
+<P><HR>
+
+<P><B><I><A HREF="#Installation">INSTALLATION</A></B></I>
+<P><B><I><A HREF="#Quick Start">QUICK START</A></B></I>
+<P><B><I><A HREF="#Options">OPTIONS</A></B></I>
+        <UL><I><A HREF="#Object Options">OBJECT OPTIONS</A></I>
+                <UL><A HREF="#bend_object">bend_object</A>
+                <BR><A HREF="#object axes">object_axis1 & object_axis2</A>
+                </UL>
+        <BR><I><A HREF="#Bend Options">BEND OPTIONS</A></I>
+                <UL><A HREF="#bend_angle">bend_angle</A>
+                <BR><A HREF="#bend_direction">bend_direction</A>
+                <BR><A HREF="#twist_angle">twist_angle</A>
+                <BR><A HREF="#bend_smoothness">bend_smoothness</A>
+                <BR><A HREF="#bend_start">bend_start</A>
+                <BR><A HREF="#bend_finish">bend_finish</A>
+                </UL>
+        </UL>
+<P><B><I><A HREF="#Legal">COPYRIGHT AND LEGAL INFORMATION</A></B></I>
+<P><B><I><A HREF="#Contact">CONTACTING THE AUTHOR</A></B></I>
+
+<P>
+<BR>
+<A NAME="Installation"></A><TABLE WIDTH=100% BORDER=0 CELLPADDING=7><TR><TD BGCOLOR=#C0C0C0>
+<FONT SIZE=+1><B><I>INSTALLATION</B></I></FONT>
+</TD></TR></TABLE>
+Copy the Object Bender include file (<I>Bend.inc</I>) to one of the directories
+(folders) in your POV-Ray library path.  Normally this is the <I>INCLUDE</I>
+sub-directory of the directory where you installed POV-Ray, so if you
+installed POV-Ray in <I>C:\POVRAY</I> you should copy the <I>Bend.inc</I> file to
+<I>C:\POVRAY\INCLUDE</I>.  On a Windows 95 system, this is probably something 
+like:
+
+<P><I>C:\Program Files\POV-Ray for Windows\Include</I>
+
+<P>On UNIX and similar systems, where filenames are case-sensitive, you may
+have to rename the include file so that it starts with a capital and the
+remaining letters are lowercase.  This will enable you to render the
+sample files without modification.
+
+<P>
+<BR>
+<A NAME="Quick Start"></A><TABLE WIDTH=100% BORDER=0 CELLPADDING=7><TR><TD BGCOLOR=#C0C0C0>
+<FONT SIZE=+1><B><I>QUICK START</B></I></FONT>
+</TD></TR></TABLE>
+The Object Bender include file lets you bend and/or twist any POV-Ray object, from a
+simple box to a complex CSG object.  You can specify the direction to
+bend the object in, and bend the object by any angle up to 360 degrees.
+There are other options which control how the object will be bent;
+to use any of these you simply add the following line to your POV-Ray
+scene file:
+
+<P><CODE>#declare </CODE><I>[variable-name]</I><CODE> = </CODE><I>[value]</I>
+
+<P>substituting the desired variable name and value where appropriate.  After
+you have declared all the options you want to use, you add the following
+line to your POV-Ray scene file:
+
+<P><CODE>#include "Bend.inc"</CODE>
+
+<P>The Object Bender include file will then automatically create the bent
+object for you.  Although only one option is required to bend an object
+(<A HREF="bend_object">bend_object</A>) you will want to use the options listed below to ensure
+you get the result that you want.
+
+<P><I>Note that Bend.inc should <B>never</B> be included at the start of a scene
+(like </I>colors.inc<I> or </I>textures.inc<I>).  It should only be included after
+first declaring the desired bend options.</I>
+
+
+<P>
+<BR>
+<A NAME="Options"></A><TABLE WIDTH=100% BORDER=0 CELLPADDING=7><TR><TD BGCOLOR=#C0C0C0>
+<FONT SIZE=+1><B><I>OPTIONS</B></I></FONT>
+</TD></TR></TABLE>
+
+<P><HR><A NAME="Object Options"></A>
+<B><I>OBJECT OPTIONS</B></I>
+<HR>
+The first step when using the Object Bender include file is to specify
+a number of parameters that identify the object you wish to bend, as
+well as its position in the POV-Ray universe.
+
+<P><A NAME="bend_object"></A>
+<B>bend_object</B>
+<HR>
+This parameter indicates the object you want to bend or twist, and can be either
+a predefined object or a completely new object definition, including
+textures and transformations, eg:
+
+<CODE><P>#declare bend_object = object {MyObject scale 3}
+<BR>#declare bend_object = cylinder {-y, y, .3 pigment {Red}}</CODE>
+
+<P>Any POV-Ray object can be used, including CSG objects and triangle meshes.
+
+<P><A NAME="object axes"></A>
+<B>object_axis1 & object_axis2</B>
+<HR>
+The two axis parameters are vectors which indicate the axis of the
+<A HREF="bend_object">bend_object</A>.  The object axis is like a piece of wire that runs through the
+object, starting at <I>object_axis1</I> and ending at <I>object_axis2</I>.  When the
+wire is bent, the object stretches and squashes to follow the shape of
+the wire.  When bending the object, <I>object_axis1</I> remains fixed, while
+<I>object_axis2</I> is moved as the axis is bent.  If you specify a <A HREF="#twist_angle">twist_angle</A> the object is twisted around the object axis.
+
+<P>The default for <I>object_axis1</I> is -y; the default for <I>object_axis2</I> is +y
+<BR>
+
+<P><HR><A NAME="Bend Options"></A>
+<B><I>BENDING OPTIONS</I></B>
+<HR>
+<P><A NAME="bend_angle"></A>
+<B>bend_angle</B>
+<HR>
+This is the angle (measured in degrees) that the object will be bent by.
+It can range from 0 (no bending) to 360 (the object is bent in a full
+circle).  Using <CODE>bend_angle = 180</CODE> will bend the object in a half circle,
+and other angles will bend the object by different amounts.  You can also
+use negative angles to bend the object backwards.
+
+<P>The default for <I>bend_angle</I> is 45 degrees
+
+<P><A NAME="bend_direction"></A>
+<B>bend_direction</B>
+<HR>
+This vector specifies the direction in which to bend the object; if the
+bend_object lies along the x-axis, using <CODE>bend_direction = y</CODE> will bend the
+object upwards.
+
+<P>The default for <I>bend_direction</I> is x
+
+<P><A NAME="twist_angle"></A>
+<B>twist_angle</B>
+<HR>
+This option allows you to twist the <A HREF="#bend_object">bend_object</A> around the
+axis specified by <I>object_axis1</I> and <I>object_axis2</I>, by any number of degrees.
+Positive angles will twist the object clockwise, while negative angles will twist the
+object anti-clockwise.  The remaining options (<I>bend_smoothness</I>, <I>bend_start</I>,
+and <I>bend_finish</I>) control the twisting of the object in the same way as
+the bending.
+
+<P>The default for <I>twist_angle</I> is 0
+
+<P><A NAME="bend_smoothness"></A>
+<B>bend_smoothness</B>
+<HR>
+This option controls how smooth the bent/twisted object will be; using smaller
+numbers will give an angular bend, while using larger numbers will make
+the bend and twist much smoother.  The value of <I>bend_smoothness</I> specifies how many
+segments the <A HREF="bend_object">bend_object</A> will be divided into, <I>per full revolution</I>, eg:
+if you use <CODE>bend_smoothness = 50</CODE> and <CODE>bend_angle = 180</CODE>, the Object Bender
+include file will use 25 segments when bending the object.
+
+<P>This option can have a large effect on the speed of parsing and
+rendering; if you are doing quick preview you should set <I>bend_smoothness</I>
+to 0 (which will use the minimum number of segments).  If the bent
+object is not as smooth as you want, you should increase this option.
+
+<P>The default for <I>bend_smoothness</I> is 100
+
+<P><A NAME="bend_start"></A>
+<B>bend_start</B>
+<HR>
+You can use this option to only bend and/or twist a partial section of the <A HREF="bend_object">bend_object</A>,
+rather than deforming the whole object.  The value of this option should lie
+between 0 and 1, eg. using <CODE>bend_start = .5</CODE> will only start bending the
+object halfway along its length.
+
+<P>The default for <I>bend_start</I> is 0
+
+<P><A NAME="bend_finish"></A>
+<B>bend_finish</B>
+<HR>
+This option also allows you to partially bend an object, and its value
+should lie between 0 and 1, eg. using <CODE>bend_finish = .7</CODE> will stop bending
+the object 70% along its length (the rest of the object will continue
+straight from this point).
+
+<P>The default for <I>bend_finish</I> is 1
+
+<P>Note that you can use the <I>bend_start</I> and <I>bend_finish</I> options together to
+only bend or twist the middle section of an object, eg. <CODE>bend_start = .3</CODE> and
+<CODE>bend_finish = .6</CODE> will only deform the middle 30% of the object.
+
+
+<P>
+<BR>
+<A NAME="Legal"></A><TABLE WIDTH=100% BORDER=0 CELLPADDING=7><TR><TD BGCOLOR=#C0C0C0>
+<FONT SIZE=+1><B><I>COPYRIGHT AND LEGAL INFORMATION</B></I></FONT>
+</TD></TR></TABLE>
+The <B>Object Bender Include File</B>, including <I>Bend.inc</I>, all documentation, and
+associated sample *.POV files are <B>Copyright 1997, 1998</B> by <B>Chris Colefax</B>.  Full
+permission is granted to the user to modify any or all of the files for
+his/her own use.  If modified versions are to be distributed the user
+should make clear the modifications that have been made by him/herself.
+
+<P>The <B>Object Bender Include File</B> may be bundled with or without other
+software on CD-ROM collections, Bulletin Board systems and other file
+archives, providing that all associated files, including documentation and
+samples, are included.  I would also request that persons intending to
+distribute the <B>Object Bender Include File</B> in this manner or otherwise
+would first <A HREF="#Contact">contact me</A> to ensure that
+they are in possession of the latest available version.
+
+<P>Further, no restrictions of any sort are placed on the usage of the include
+file itself (<I>Bend.inc</I>), and scene files or images created using the include
+file remain entirely the property of the user or users who have created
+them.  I claim no liability or responsibility for damages or loss resulting
+from usage of the include file, or any part of the include file package.
+
+<P>
+<BR>
+<A NAME="Contact"></A><TABLE WIDTH=100% BORDER=0 CELLPADDING=7><TR><TD BGCOLOR=#C0C0C0>
+<FONT SIZE=+1><B><I>CONTACTING THE AUTHOR</B></I></FONT>
+</TD></TR></TABLE>
+If you wish to contact me with bug reports, bug fixes, criticisms, 
+comments, suggested improvements, questions, etc. you can reach me by 
+email at:
+
+<P><A HREF="mailto:ccolefax@geocities.com">ccolefax@geocities.com</A>
+
+<P>or by regular mail at:
+
+<UL>Chris Colefax
+<BR>PO Box 110
+<BR>Kuranda, Queensland
+<BR>Australia  4872
+
+</UL>
+<HR>
+
+<DIV ALIGN=RIGHT><FONT SIZE=-1><I>
+POV-Ray<FONT SIZE=-2><SUP>TM</SUP></FONT> and Persistence of Vision<FONT SIZE=-2><SUP>TM</SUP></FONT> are registered trademarks of the POV-Ray Team<FONT SIZE=-2><SUP>TM</SUP></FONT>
+</I></FONT></DIV>
+
+</BODY></HTML>

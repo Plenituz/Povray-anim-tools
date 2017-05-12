@@ -263,6 +263,25 @@
 #macro Povticular_CacheFrame(Name, FrameNumber)
     #local mStr = Povticular_GetRenderString(Name)
     StoreVar(concat("tmp_cache_", str(FrameNumber, 0, 0)), mStr)
+#end 
+
+#macro Povticular_CacheFrames(Name, Count)
+    #for(I, 1, Count) 
+        DebugFloatStr("frame=", I)
+        Povticular_CalculateFrame(Name)
+        Povticular_CacheFrame(Name, I)
+    #end  
+#end
+
+#macro Povticular_ReadCache(VarName)
+    Povticular_ReadCachedFrame(VarName, frame_number)
+#end 
+
+#macro Povticular_ReadCachedFrame(VarName, Frame)
+    #include concat(VarName, ".inc")  
+   // object{ Cache_Missile[frame_number] }
+    #local ToParse = concat("object{ ", VarName, "[Frame] }")
+    Parse_String(ToParse)
 #end
 
 #macro Povticular_CalculateFrame(Name)
