@@ -95,7 +95,7 @@ keyframes should be added in the right order, the list doesn't sort itself
      
     #if(Count != 0)
         #local Interpolation = DA_Get(ValuesArrayName, Count-1);
-        //careful for indexoutofbound, not secure yet
+        //careful for indexoutofbound, not secure yet        
         #for(I, 0, Count-2)
             #local ThisTime = DA_Get(TimeArrayName, I);
             #local NextTime = DA_Get(TimeArrayName, I+1); 
