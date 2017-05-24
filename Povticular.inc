@@ -20,6 +20,7 @@
     setAttr(Attr, "customPigment", "\"null\"")          //pigment that will be used instead of color if set  
     setAttr(Attr, "customObjectModifier", "\"null\"") 
     setAttr(Attr, "baseVel", <1, 1, 1>)
+    setAttr(Attr,  "baseSize", 0.1)
     setAttr(Attr, "keepCache" , 0)   
     
     DA_Create(Povticular_PosArray(Name), 100)
@@ -57,7 +58,8 @@
     
     #local Life = getFloatAttr(Attr, "particleLifeTimeInFrame");
     #local EmitterPos = getVectAttr(Attr, "emitterPos"); 
-    #local BaseVel = getVectAttr(Attr, "baseVel");
+    #local BaseVel = getVectAttr(Attr, "baseVel"); 
+    #local BaseSize = getFloatAttr(Attr, "baseSize");
                                        
     #local MaxCount = getFloatAttr(Attr, "maxCount");
     #local Count = Povticular_ParticleCount(Name);
@@ -65,7 +67,7 @@
         DA_Add(Povticular_PosArray(Name), EmitterPos)
         DA_Add(Povticular_VelArray(Name), BaseVel)
         DA_Add(Povticular_ColorArray(Name), <1, 1, 1>)
-        DA_Add(Povticular_SizeArray(Name), 0.1)
+        DA_Add(Povticular_SizeArray(Name), BaseSize)
         DA_Add(Povticular_LifeArray(Name), 0)
         DA_Add(Povticular_MaxLifeArray(Name), Life)
         DA_Add(Povticular_CustomDataArray(Name), <0, 0, 0>)
