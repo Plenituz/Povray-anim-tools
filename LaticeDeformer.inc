@@ -27,7 +27,7 @@
   }
 */
 #macro Voxelize(VectsFirst, VectsSecond, Obj)
-    #local Precision = 5;  
+    #local Precision = 35;  
     //A 100 : 3m17           
     
     /*box{

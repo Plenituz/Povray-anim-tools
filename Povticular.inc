@@ -197,60 +197,6 @@
 #end 
 
 #macro Povticular_Render(Name)
-    /*#local PosArr = Povticular_PosArray(Name) 
-    #local VelArr = Povticular_VelArray(Name)
-    #local LifeArr = Povticular_LifeArray(Name) 
-    #local AffArr = Povticular_AffectorArray(Name)
-    #local ColArr = Povticular_ColorArray(Name)
-    #local SizeArr = Povticular_SizeArray(Name)
-    #local MaxLifeArr = Povticular_MaxLifeArray(Name)
-    #local CustomDataArr = Povticular_CustomDataArray(Name)                                       
-    #local RenderAffArr = Povticular_RenderAffectorArray(Name)
-    
-    #local RenderAffCount = DiskArray_GetCount(RenderAffArr);
-    #local CustomPigment = getStrAttr(Povticular_Name(Name), "customPigment")
-    #local CustomModifier = getStrAttr(Povticular_Name(Name), "customObjectModifier") 
-
-    #local ParticleCount = Povticular_ParticleCount(Name);
-    #for(I, 0, ParticleCount-1)
-        
-        #local Vel = DA_Get(VelArr, I);
-        #local Pos = DA_Get(PosArr, I);
-        #local Life = DA_Get(LifeArr, I);
-        #local Color = DA_Get(ColArr, I);
-        #local Size = DA_Get(SizeArr, I); 
-        #local MaxLife = DA_Get(MaxLifeArr, I);
-        #local CustomData = DA_Get(CustomDataArr, I);
-        
-        #local RenderString = "null"
-        #for(K, 0, RenderAffCount-1)
-            #local ThisAffector = DiskArray_GetStr(RenderAffArr, K)
-            Affector_AffectRender(ThisAffector, Pos, Vel, Size, Life, Color, MaxLife, CustomData, RenderString)
-        #end    
-        
-        sphere{
-            Pos, Size
-            #if(CustomPigment = "null")   
-                pigment{ color rgbt Color }
-            #else 
-                #if(CustomPigment = "none")
-                    //do nothing
-                #else
-                    pigment{Parse_String(CustomPigment)}
-                #end
-            #end
-            
-            #if(RenderString != "null")
-                Parse_String(RenderString)
-            #end 
-            
-            #if(CustomModifier != "null")
-                Parse_String(CustomModifier)
-            #end
-            
-            
-        }
-    #end */
     #local KeepCache = getFloatAttr(Povticular_Name(Name), "keepCache")
     #local StringRender = Povticular_GetRenderString(Name) 
     #if(KeepCache = 1)
