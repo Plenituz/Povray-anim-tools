@@ -103,7 +103,7 @@ keyframes should be added in the right order, the list doesn't sort itself
                 #local From = DA_Get(ValuesArrayName, I);
                 #local To = DA_Get(ValuesArrayName, I+1); 
                 #local TimeVal = (Time - ThisTime)/(NextTime-ThisTime);
-                #local Interpolation = Keyframeholder_Interpolator(From, To, TimeVal, Interpolator, I, I+1);
+                #local Interpolation = Keyframeholder_Interpolator(From, To, TimeVal, Interpolator, I, I+1, Name);
                 #break
             #end
         #end
@@ -117,16 +117,68 @@ keyframes should be added in the right order, the list doesn't sort itself
 #macro Keyframeholder_LinearInterpolation(From, To, Val)
      #declare Int = From + (To - From)*Val;
      Int;
-#end 
+#end
 
-#macro Keyframeholder_Interpolator(From, To, Val, Interpolator, CountFrom, CountTo) 
+#macro bounce(T)
+    #local V = T*T*8;
+    V
+#end
+
+#macro A(T,S)
+    #local V = T * T * ((S + 1) * T - S);
+    V
+#end
+#macro O(T,S)
+   #local V = T * T * ((S + 1) * T + S);
+   V
+#end
+
+#macro Keyframeholder_Interpolator(From, To, Val, Interpolator, CountFrom, CountTo, Name) 
+    
+    
     #local Inter = Val;
     #if(Interpolator = "SmoothStep")
         #local Inter = Val * Val * (3 - (2 * Val));
     #end                          
     #if(Interpolator = "AccelerateDeccelerate")
         #local Inter = (cos((Val + 1) * pi) / 2.0) + 0.5;
+    #end
+    #if(Interpolator = "Accelerate")
+        #local Inter = Val * Val;
+    #end
+    #if(Interpolator = "Bounce")
+
+        #if (Val < 0.3535)
+            #local Inter = bounce(Val);
+        #else 
+            #if (Val < 0.7408)
+                #local Inter = bounce(Val - 0.54719) + 0.7;
+            #else
+                #if (Val < 0.9644)
+                    #local Inter = bounce(Val - 0.8526) + 0.9;
+                #else
+                    #local Inter = bounce(Val - 1.0435) + 0.95;
+                #end
+            #end
+        #end
     #end 
+    #if(Interpolator = "Anticipate")
+        #local tension = getFloatAttr(Name, "tension");
+        #local Inter = Val * Val * ((tension + 1) * Val - tension);
+    #end
+    #if(Interpolator = "Spring")
+        #local factor = getFloatAttr(Name, "factor");
+        #local Inter = pow(2, -10 * Val) * sin((Val - factor / 4) * (2 * pi) / factor) + 1;
+    #end
+    #if(Interpolator = "AnticipateOvershoot")
+        #local tension = 10;
+        #if (Val < 0.5)
+            #local Inter = 0.5 * A(Val * 2.0, tension);
+        #else
+            #local Inter = 0.5 * (O(Val * 2.0 - 2.0, tension) + 2.0);
+        #end
+    #end
+         
     #if(Interpolator = "CustomCurve") 
         #local TimeArrayName = concat(Name, "_times");
         #local LeftHandleArrayName = concat(Name, "_lefts");

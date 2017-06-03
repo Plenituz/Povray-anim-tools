@@ -77,7 +77,7 @@ camera{
  //affiche les 70 premiere frame en une seule image, tu peux enlever la for loop et remplacer
  //I par frame_number pour avoir une image a la fois
 #for(I, 0, 70)                            
-    #local Value = Keyframeholder_GetValueAtTime("mKey", I, "CustomCurve");
+    #local Value = Keyframeholder_GetValueAtTime("mKey", I, "SmoothStep");
     //la ligne suivante affiche la valeur dans la console
     //#debug concat("\nvalue=", str(Value, 0,-1), " i=", str(I, 0, -1), "\n")
     sphere{

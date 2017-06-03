@@ -16,7 +16,7 @@
     #declare ShakeRand = seed(frame_number*Seed);                                                
     #declare Rot = <rand(ShakeRand)*Weight.x, rand(ShakeRand)*Weight.y, rand(ShakeRand)*Weight.z> *360;
     
-    #declare Shake = vtransform(<ShakeRadius, 0, 0>, Rotate_Around_Trans(Rot, <0, 0, 0>) ); 
+    #declare Shake = vtransform(<Radius, 0, 0>, Rotate_Around_Trans(Rot, <0, 0, 0>) ); 
     #declare Shake = Keyframeholder_LinearInterpolation(ShakeStart, Shake, 1/24);
     StoreVar(Name, Shake)
     Shake;
